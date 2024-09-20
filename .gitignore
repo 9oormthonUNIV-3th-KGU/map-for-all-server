@@ -6,6 +6,9 @@ build/
 !**/src/test/**/build/
 /src/main/resources/*.yml
 
+# application.yml.template 예외 처리
+!src/main/resources/application.yml.template
+
 ### STS ###
 .apt_generated
 .classpath
