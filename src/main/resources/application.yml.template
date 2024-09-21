@@ -10,7 +10,6 @@ spring:
       dialect: org.hibernate.dialect.MySQLDialect
     properties:
       hibernate.jdbc.time_zone: UTC
-      ddl-auto: update
     show-sql: false
 
   datasource:
