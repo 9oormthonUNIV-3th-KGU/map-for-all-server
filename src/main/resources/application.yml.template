@@ -6,8 +6,9 @@ spring:
     log-resolved-exception: true
 
   jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.MySQLDialect
     properties:
-      hibernate.dialect: org.hibernate.dialect.MySQLDialect
       hibernate.jdbc.time_zone: UTC
       ddl-auto: update
     show-sql: false
