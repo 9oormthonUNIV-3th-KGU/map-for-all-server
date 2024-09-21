@@ -77,5 +77,5 @@ jobs:
           docker stop myapp || true
           docker rm myapp || true
           docker pull ${{ secrets.AWS_ECR_URL }}/map-for-all:latest
-          docker run -d -p 8080:8080 --name myapp ${{ secrets.AWS_ECR_URL }}/map-for-all:latest
+          docker run -d -p 8080:3000 --name myapp ${{ secrets.AWS_ECR_URL }}/map-for-all:latest
 
