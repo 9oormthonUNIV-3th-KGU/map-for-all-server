@@ -55,8 +55,7 @@ spring:
 
 cors:
   allowed-origins:
-    - "https://9oorm-kgu-tracker.vercel.app/"
-    - "http://localhost:3000"
+    - "https://9oorm-kgu-tracker.vercel.app"
   allowed-methods: "*"
   allowed-headers: "*"
   allow-credentials: true
