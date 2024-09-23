@@ -52,7 +52,7 @@ jobs:
         
     # Docker 빌드
     - name: Build Docker image
-      run: docker build -t myapp:latest .
+      run: docker build --no-cache -t myapp:latest .
 
     # 이미지 태그 및 푸시
     - name: Tag and Push Docker image to ECR
