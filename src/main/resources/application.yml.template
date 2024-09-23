@@ -25,7 +25,7 @@ spring:
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
             client-secret: ${KAKAO_CLIENT_SECRET}
-            redirect-uri: "${BACK_DOMAIN_URL}/login/oauth2/code/kakao"
+            redirect-uri: ${KAKAO_REDIRECT_URI}
             authorization-grant-type: authorization_code
             scope: account_email, profile_nickname, profile_image
             client-name: Kakao
@@ -55,7 +55,7 @@ spring:
 
 cors:
   allowed-origins:
-    - "https://${DOMAIN_URL}"
+    - ${FRONT_DOMAIN_URL}
     - "http://localhost:3000"
   allowed-methods: "*"
   allowed-headers: "*"
@@ -63,9 +63,9 @@ cors:
 
 url:
   redirectUrl:
-    onBoard: "https://${FRONT_DOMAIN_URL}/on-board"
-    main: "https://${FRONT_DOMAIN_URL}/main"
-  domain: "${FRONT_DOMAIN_URL}"
+    onBoard: ${FRONT_DOMAIN_URL_ONBOARD}
+    main: ${FRONT_DOMAIN_URL_MAIN}
+  domain: ${FRONT_DOMAIN}
 
 logging:
   level:
