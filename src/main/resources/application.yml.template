@@ -55,7 +55,7 @@ spring:
 
 cors:
   allowed-origins:
-    - ${FRONT_DOMAIN_URL}
+    - "https://9oorm-kgu-tracker.vercel.app/"
     - "http://localhost:3000"
   allowed-methods: "*"
   allowed-headers: "*"
@@ -63,9 +63,9 @@ cors:
 
 url:
   redirectUrl:
-    onBoard: ${FRONT_DOMAIN_URL_ONBOARD}
-    main: ${FRONT_DOMAIN_URL_MAIN}
-  domain: ${FRONT_DOMAIN}
+    onBoard: "https://9oorm-kgu-tracker.vercel.app/on-board"
+    main: "https://9oorm-kgu-tracker.vercel.app/main"
+  domain: "9oorm-kgu-tracker.vercel.app"
 
 logging:
   level:
