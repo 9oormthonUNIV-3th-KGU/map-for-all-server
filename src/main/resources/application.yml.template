@@ -39,8 +39,8 @@ spring:
 
   jwt:
     secret-key: ${JWT_SECRET_KEY}
-    expiration: 180000 # 3분
-    refresh-expiration: 300000 # 5분
+    expiration: 86400000 # 24시간
+    refresh-expiration: 1209600000 # 2주
 
   data:
     redis:
