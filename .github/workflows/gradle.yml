@@ -42,6 +42,10 @@ jobs:
         KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
         KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
 
+    # AWS ECR 로그아웃
+    - name: Logout from ECR (if logged in)
+      run: docker logout ${{ secrets.AWS_ECR_URL }} || true
+
     # AWS ECR 로그인
     - name: Login to AWS ECR
       run: |
