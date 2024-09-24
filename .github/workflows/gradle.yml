@@ -74,6 +74,7 @@ jobs:
         script: |
           docker stop myapp || true
           docker rm myapp || true
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_URL }}
           docker pull ${{ secrets.AWS_ECR_URL }}/map-for-all:latest
           docker run -d -p 8080:3000 --name myapp ${{ secrets.AWS_ECR_URL }}/map-for-all:latest
           docker image prune -f
