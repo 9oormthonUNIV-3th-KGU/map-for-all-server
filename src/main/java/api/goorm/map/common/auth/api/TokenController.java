@@ -1,9 +1,9 @@
 package api.goorm.map.common.auth.api;
 
 import api.goorm.map.common.auth.service.RefreshTokenService;
-import api.goorm.map.common.config.UrlProperties;
 import api.goorm.map.common.auth.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/token")
+@Tag(name = "Token", description = "토큰")
 public class TokenController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
-    private final UrlProperties urlProperties;
 
-    @Operation(description = "액세스 토큰 재발급")
+    @Operation(summary = "액세스 토큰 재발급", description = "Bearer {RefreshToken}을 통해 액세스 토큰 발급 가능")
     @PostMapping("/reissue")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = extractRefreshTokenFromCookies(request);
