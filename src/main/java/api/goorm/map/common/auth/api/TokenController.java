@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,14 +61,15 @@ public class TokenController {
     }
 
     private void addAccessTokenToCookie(HttpServletResponse response, String accessToken) {
-        Cookie accessTokenCookie = new Cookie("AccessToken", accessToken);
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setSecure(true);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge((int) jwtTokenProvider.getValidityInMilliseconds() / 1000);
-        accessTokenCookie.setDomain(urlProperties.getDomain());
-        accessTokenCookie.setAttribute("SameSite", "None");
+        ResponseCookie cookie = ResponseCookie.from("AccessToken", accessToken)
+                .maxAge((int) jwtTokenProvider.getValidityInMilliseconds() / 1000)
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .domain(urlProperties.getDomain())
+                .sameSite("None")
+                .build();
 
-        response.addCookie(accessTokenCookie);
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 }

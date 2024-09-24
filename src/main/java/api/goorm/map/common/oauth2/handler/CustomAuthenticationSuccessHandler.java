@@ -8,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -47,14 +48,15 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     }
 
     private void addCookie(HttpServletResponse response, String name, String value, long maxAgeMillis) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge((int) maxAgeMillis / 1000);
-        cookie.setDomain(urlProperties.getDomain());
-        cookie.setAttribute("SameSite", "None");
+        ResponseCookie cookie = ResponseCookie.from(name, value)
+                .maxAge(maxAgeMillis / 1000)
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .domain(urlProperties.getDomain())
+                .sameSite("None")
+                .build();
 
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 }
