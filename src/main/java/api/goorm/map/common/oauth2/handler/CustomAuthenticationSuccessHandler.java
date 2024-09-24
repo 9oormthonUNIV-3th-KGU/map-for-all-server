@@ -53,7 +53,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 .path("/")
                 .httpOnly(true)
                 .secure(true)
-                .domain(urlProperties.getDomain())
                 .sameSite("None")
                 .build();
 

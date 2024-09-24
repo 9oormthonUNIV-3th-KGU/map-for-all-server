@@ -66,7 +66,6 @@ public class TokenController {
                 .path("/")
                 .httpOnly(true)
                 .secure(true)
-                .domain(urlProperties.getDomain())
                 .sameSite("None")
                 .build();
 
