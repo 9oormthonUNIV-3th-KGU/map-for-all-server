@@ -4,12 +4,10 @@ import api.goorm.map.common.auth.service.RefreshTokenService;
 import api.goorm.map.common.config.UrlProperties;
 import api.goorm.map.common.auth.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,31 +42,16 @@ public class TokenController {
         }
 
         String newAccessToken = jwtTokenProvider.createToken(userId);
-        addAccessTokenToCookie(response, newAccessToken);
+        response.setHeader("Authorization", "Bearer " + newAccessToken);
 
         return ResponseEntity.ok("Access Token reissued successfully");
     }
 
     private String extractRefreshTokenFromCookies(HttpServletRequest request) {
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals("RefreshToken")) {
-                    return cookie.getValue();
-                }
-            }
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
         }
         return null;
-    }
-
-    private void addAccessTokenToCookie(HttpServletResponse response, String accessToken) {
-        ResponseCookie cookie = ResponseCookie.from("AccessToken", accessToken)
-                .maxAge((int) jwtTokenProvider.getValidityInMilliseconds() / 1000)
-                .path("/")
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
-                .build();
-
-        response.addHeader("Set-Cookie", cookie.toString());
     }
 }
