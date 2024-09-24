@@ -15,7 +15,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String kakaoId;
 
     @Column(nullable = false)
@@ -23,4 +23,7 @@ public class User {
 
     @Column(nullable = false)
     private String profileImage;
+
+    @Column(unique = true)
+    private String email;
 }

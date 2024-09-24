@@ -43,13 +43,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             String kakaoId = String.valueOf(attributes.get("id"));
             String nickname = (String) profile.get("nickname");
             String profileImage = (String) profile.get("profile_image_url");
+            String email = (String) kakaoAccount.get("email");
 
             boolean isFirstLogin = userService.findByKakaoId(kakaoId) == null;
 
             Map<String, Object> additionalAttributes = new HashMap<>(attributes);
             additionalAttributes.put("isFirstLogin", isFirstLogin);
 
-            userService.save(kakaoId, nickname, profileImage);
+            userService.save(kakaoId, nickname, profileImage, email);
 
             return new DefaultOAuth2User(
                     Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
