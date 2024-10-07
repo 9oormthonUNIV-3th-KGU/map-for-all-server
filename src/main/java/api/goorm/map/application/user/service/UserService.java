@@ -39,6 +39,14 @@ public class UserService {
         return userRepository.save(newUser).getId();
     }
 
+    @Transactional
+    public Long updateUsername(String username) {
+        UserResponseDto userDto = getCurrentLoginUser();
+        User user = findByKakaoId(userDto.getKakaoId());
+        user.setNickname(username);
+        return user.getId();
+    }
+
     public User findByKakaoId(String kakaoId) {
         return userRepository.findByKakaoId(kakaoId).orElse(null);
     }
