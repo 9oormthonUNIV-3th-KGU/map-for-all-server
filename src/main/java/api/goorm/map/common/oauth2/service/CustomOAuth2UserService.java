@@ -50,7 +50,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             Map<String, Object> additionalAttributes = new HashMap<>(attributes);
             additionalAttributes.put("isFirstLogin", isFirstLogin);
 
-            userService.save(kakaoId, nickname, profileImage, email);
+            if(isFirstLogin) {
+                userService.save(kakaoId, nickname, profileImage, email);
+            }
 
             return new DefaultOAuth2User(
                     Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
