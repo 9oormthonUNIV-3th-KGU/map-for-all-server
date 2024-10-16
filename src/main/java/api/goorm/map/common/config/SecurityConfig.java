@@ -51,7 +51,9 @@ public class SecurityConfig {
             "/oauth2/**",
             "/oauth/login/kakao",
             "/login-failure",
-            "/error"
+            "/error",
+            "/api/search/location",
+            "/api/recommend/location"
     };
 
     @Bean
