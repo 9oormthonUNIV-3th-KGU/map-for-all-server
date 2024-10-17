@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@RequiredArgsConstructor
 public class RecommendRequestDto {
     private Double latitude;
     private Double longitude;

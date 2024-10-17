@@ -10,8 +10,6 @@ import java.util.List;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@RequiredArgsConstructor
 public class RecommendResponseDto {
     private List<Location> recommendLocations;
 }

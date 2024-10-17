@@ -22,7 +22,7 @@ public class SearchService {
 
     @Transactional
     public SearchResponseDto save(SearchRequestDto dto) {
-        String locationName = dto.getLocation();
+        String locationName = dto.getLocationName();
         Location location = locationRepository.findByName(locationName)
                 .orElseGet(()-> {
                     // 새로운 장소 검색 시 location 생성

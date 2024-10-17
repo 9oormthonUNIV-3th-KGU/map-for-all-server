@@ -4,11 +4,8 @@ import lombok.*;
 
 @Getter
 @Builder
-@AllArgsConstructor
-@RequiredArgsConstructor
 public class SearchRequestDto {
-
-    private String location;
+    private String locationName;
     private Double latitude;
     private Double longitude;
 }
