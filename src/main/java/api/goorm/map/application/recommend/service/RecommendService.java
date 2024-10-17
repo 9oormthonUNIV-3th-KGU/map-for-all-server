@@ -33,6 +33,6 @@ public class RecommendService {
                 .limit(3)
                 .collect(Collectors.toList());
 
-        return new RecommendResponseDto(topLocations);
+        return RecommendResponseDto.toRecommendResponseDto(topLocations);
     }
 }

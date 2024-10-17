@@ -12,4 +12,10 @@ import java.util.List;
 @Builder
 public class RecommendResponseDto {
     private List<Location> recommendLocations;
+
+    public static RecommendResponseDto toRecommendResponseDto(List<Location> recommendLocations) {
+        return RecommendResponseDto.builder()
+                .recommendLocations(recommendLocations)
+                .build();
+    }
 }
