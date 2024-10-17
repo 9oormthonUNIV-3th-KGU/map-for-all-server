@@ -16,7 +16,7 @@ public class Location {
     private Long id;
 
     @Column(nullable = false)
-    private String location;
+    private String name;
 
     @Column(nullable = false)
     private Double latitude;

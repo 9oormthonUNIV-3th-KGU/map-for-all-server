@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LocationRepository extends JpaRepository<Location, Long> {
-    Optional<Location> findByLocation(String location);
+    Optional<Location> findByName(String location);
     // Haversine 공식 사용
     // 1km 이내 장소
     @Query("SELECT l FROM Location l WHERE (6371 * acos(cos(radians(:latitude)) * cos(radians(l.latitude)) * cos(radians(l.longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(l.latitude)))) < 1")

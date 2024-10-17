@@ -24,18 +24,18 @@ public class SearchService {
     public SearchResponseDto save(SearchRequestDto dto) {
         String locationName = dto.getLocation();
         Location location;
-        if(locationRepository.findByLocation(locationName).isEmpty()) {
+        if(locationRepository.findByName(locationName).isEmpty()) {
             // 새로운 장소 검색 시
             location = Location.builder()
                     .views(1)
-                    .location(locationName)
+                    .name(locationName)
                     .latitude(dto.getLatitude())
                     .longitude(dto.getLongitude())
                     .build();
             locationRepository.save(location);
         } else {
             // 기존 장소 검색 시
-            location = locationRepository.findByLocation(locationName).get();
+            location = locationRepository.findByName(locationName).get();
             // 검색수 증가
             location.incrementViews();
         }
