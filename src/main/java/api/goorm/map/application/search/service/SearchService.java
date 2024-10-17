@@ -23,26 +23,27 @@ public class SearchService {
     @Transactional
     public SearchResponseDto save(SearchRequestDto dto) {
         String locationName = dto.getLocation();
-        Location location;
-        if(locationRepository.findByName(locationName).isEmpty()) {
-            // 새로운 장소 검색 시
-            location = Location.builder()
-                    .views(1)
-                    .name(locationName)
-                    .latitude(dto.getLatitude())
-                    .longitude(dto.getLongitude())
-                    .build();
-            locationRepository.save(location);
-        } else {
-            // 기존 장소 검색 시
-            location = locationRepository.findByName(locationName).get();
-            // 검색수 증가
+        Location location = locationRepository.findByName(locationName)
+                .orElseGet(()-> {
+                    // 새로운 장소 검색 시 location 생성
+                    Location newLocation = Location.builder()
+                            .views(1)
+                            .name(locationName)
+                            .latitude(dto.getLatitude())
+                            .longitude(dto.getLongitude())
+                            .build();
+                    locationRepository.save(newLocation);
+                    return newLocation;
+                });
+
+        // 기존 장소일 경우 조회수 증가
+        if(location.getViews() > 1) {
             location.incrementViews();
         }
 
-        if(userService.findByKakaoId(userService.getCurrentUserId()) != null) {
-            // 현재 로그인한 사용자
-            User user = userService.findByKakaoId(userService.getCurrentUserId());
+        User user = userService.findByKakaoId(userService.getCurrentUserId());
+        if(user != null) {
+            // 로그인한 사용자가 있을 시 검색 조회 기록 저장
             Search search = Search.builder()
                     .location(location)
                     .user(user)
