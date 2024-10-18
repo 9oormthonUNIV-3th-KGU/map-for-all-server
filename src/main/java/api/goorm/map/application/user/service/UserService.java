@@ -58,7 +58,7 @@ public class UserService {
         return UserResponseDto.toDto(user);
     }
 
-    private String getCurrentUserId() {
+    public String getCurrentUserId() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof OAuth2User) {
             return String.valueOf(((OAuth2User) principal).getAttributes().get("id"));
