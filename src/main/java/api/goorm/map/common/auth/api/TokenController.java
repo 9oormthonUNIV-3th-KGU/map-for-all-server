@@ -2,12 +2,15 @@ package api.goorm.map.common.auth.api;
 
 import api.goorm.map.common.auth.service.RefreshTokenService;
 import api.goorm.map.common.auth.jwt.JwtTokenProvider;
+import api.goorm.map.common.config.UrlProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +24,12 @@ public class TokenController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
+    private final UrlProperties urlProperties;
 
     @Operation(summary = "액세스 토큰 재발급", description = "Bearer {RefreshToken}을 통해 액세스 토큰 발급 가능")
     @PostMapping("/reissue")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = extractRefreshTokenFromCookies(request);
+        String refreshToken = extractTokenFromCookies(request);
         if (refreshToken == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No Refresh Token provided");
         }
@@ -42,16 +46,48 @@ public class TokenController {
         }
 
         String newAccessToken = jwtTokenProvider.createToken(userId);
-        response.setHeader("Authorization", "Bearer " + newAccessToken);
+        addAccessTokenToCookie(response, newAccessToken);
 
         return ResponseEntity.ok("Access Token reissued successfully");
     }
 
-    private String extractRefreshTokenFromCookies(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+    @Operation(summary = "로그아웃")
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        String accessToken = extractTokenFromCookies(request);
+
+        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
+
+            String kakaoId = jwtTokenProvider.getUserIdFromToken(accessToken);
+            refreshTokenService.deleteRefreshToken(kakaoId);
+
+            return ResponseEntity.ok("Successfully logged out");
+        }
+
+        return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).body("Invalid token");
+    }
+
+    private String extractTokenFromCookies(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals("RefreshToken")) {
+                    return cookie.getValue();
+                }
+            }
         }
         return null;
+    }
+
+    private void addAccessTokenToCookie(HttpServletResponse response, String accessToken) {
+        ResponseCookie cookie = ResponseCookie.from("AccessToken", accessToken)
+                .maxAge((int) jwtTokenProvider.getValidityInMilliseconds() / 1000)
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .domain(urlProperties.getDomain())
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 }

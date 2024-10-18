@@ -56,15 +56,17 @@ spring:
 cors:
   allowed-origins:
     - "https://9oorm-kgu-tracker.vercel.app"
+    - "https://www.travelersenior.site"
+    - "https://api.travelersenior.site"
   allowed-methods: "*"
   allowed-headers: "*"
   allow-credentials: true
 
 url:
   redirectUrl:
-    onBoard: "https://9oorm-kgu-tracker.vercel.app/on-board"
-    main: "https://9oorm-kgu-tracker.vercel.app/main"
-  domain: "9oorm-kgu-tracker.vercel.app"
+    onBoard: "https://www.travelersenior.site/on-board"
+    main: "https://www.travelersenior.site/"
+  domain: ".travelersenior.site"
 
 logging:
   level:
