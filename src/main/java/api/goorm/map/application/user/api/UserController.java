@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,5 +35,14 @@ public class UserController {
     ) {
         Long id = userService.updateUsername(username);
         return ApiResponse.createSuccess(id);
+    }
+
+    @Operation(summary = "회원 탈퇴", description = "탈퇴시 검색 기록 저장 여부를 결정할 수 있습니다.")
+    @DeleteMapping("/delete")
+    public ResponseEntity<Long> deleteUser(
+            @RequestParam(defaultValue = "false") boolean keepSearchHistory
+    ) {
+        Long id = userService.deleteUser(keepSearchHistory);
+        return ResponseEntity.ok(id);
     }
 }

@@ -7,21 +7,21 @@ import api.goorm.map.application.search.dto.SearchResponseDto;
 import api.goorm.map.application.search.entity.Location;
 import api.goorm.map.application.search.entity.Search;
 import api.goorm.map.application.user.entity.User;
-import api.goorm.map.application.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class SearchService {
 
-    private final UserService userService;
     private final LocationRepository locationRepository;
     private final SearchRepository searchRepository;
 
     @Transactional
-    public SearchResponseDto save(SearchRequestDto dto) {
+    public SearchResponseDto save(SearchRequestDto dto, User user) {
         String locationName = dto.getLocationName();
         Location location = locationRepository.findByName(locationName)
                 .orElseGet(()-> {
@@ -41,7 +41,6 @@ public class SearchService {
             location.incrementViews();
         }
 
-        User user = userService.findByKakaoId(userService.getCurrentUserId());
         if(user != null) {
             // 로그인한 사용자가 있을 시 검색 조회 기록 저장
             Search search = Search.builder()
@@ -51,5 +50,18 @@ public class SearchService {
             searchRepository.save(search);
         }
         return SearchResponseDto.toSearchResponseDto(location);
+    }
+
+    @Transactional
+    public Long deleteSearchByUserId(Long userId) {
+        return searchRepository.deleteByUserId(userId);
+    }
+
+    public List<SearchResponseDto> getSearchList(User currentUser) {
+        List<Search> searches = searchRepository.findTop5ByUserIdOrderByCreatedAtDesc(currentUser.getId());
+        return searches.stream()
+                .map(Search::getLocation)
+                .map(SearchResponseDto::toSearchResponseDto)
+                .toList();
     }
 }
