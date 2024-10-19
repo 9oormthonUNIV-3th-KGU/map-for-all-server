@@ -22,7 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String accessToken = getTokenFromRequest(request);
+        String accessToken = getTokenFromRequest(request) == null ? getTokenFromRequestBearer(request) : getTokenFromRequest(request);
         if (accessToken != null) {
             if (jwtTokenProvider.validateToken(accessToken)) {
                 if (jwtTokenProvider.isTokenExpired(accessToken)) {
@@ -59,6 +59,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     return cookie.getValue();
                 }
             }
+        }
+        return null;
+    }
+
+    // Swgger 테스트 시에 사용합니다.
+    private String getTokenFromRequestBearer(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 부분 제거
         }
         return null;
     }
