@@ -26,7 +26,7 @@ public class TokenController {
     private final RefreshTokenService refreshTokenService;
     private final UrlProperties urlProperties;
 
-    @Operation(summary = "액세스 토큰 재발급", description = "Bearer {RefreshToken}을 통해 액세스 토큰 발급 가능")
+    @Operation(summary = "액세스 토큰 재발급", description = "Cookie를 통해 액세스 토큰 발급 가능")
     @PostMapping("/reissue")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = extractTokenFromCookies(request);
@@ -53,13 +53,16 @@ public class TokenController {
 
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = extractTokenFromCookies(request);
 
         if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
 
             String kakaoId = jwtTokenProvider.getUserIdFromToken(accessToken);
             refreshTokenService.deleteRefreshToken(kakaoId);
+
+            deleteCookie(response, "AccessToken");
+            deleteCookie(response, "RefreshToken");
 
             return ResponseEntity.ok("Successfully logged out");
         }
@@ -81,6 +84,19 @@ public class TokenController {
     private void addAccessTokenToCookie(HttpServletResponse response, String accessToken) {
         ResponseCookie cookie = ResponseCookie.from("AccessToken", accessToken)
                 .maxAge((int) jwtTokenProvider.getValidityInMilliseconds() / 1000)
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .domain(urlProperties.getDomain())
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
+    }
+
+    private void deleteCookie(HttpServletResponse response, String cookieName) {
+        ResponseCookie cookie = ResponseCookie.from(cookieName, "")
+                .maxAge(0)
                 .path("/")
                 .httpOnly(true)
                 .secure(true)
