@@ -34,4 +34,11 @@ public class SearchController {
         List<SearchResponseDto> searches = searchService.getSearchList(userService.getCurrentUser());
         return ResponseEntity.ok(searches);
     }
+
+    @Operation(summary = "검색 기록 삭제", description = "검색 기록을 삭제합니다.")
+    @PostMapping("/delete")
+    public ResponseEntity<Long> deleteSearch(@RequestParam Long locationId) {
+        Long id = searchService.deleteSearchByUserIdAndLocationId(userService.getCurrentUser().getId(), locationId);
+        return ResponseEntity.ok(id);
+    }
 }
