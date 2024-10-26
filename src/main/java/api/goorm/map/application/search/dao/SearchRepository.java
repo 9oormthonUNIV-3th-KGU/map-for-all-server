@@ -10,4 +10,5 @@ public interface SearchRepository extends JpaRepository<Search, Long> {
     List<Search> findTop5ByUserIdOrderByCreatedAtDesc(Long userId);
 
     Long deleteByUserId(Long userId);
+    Long deleteByUserIdAndLocationId(Long userId, Long locationId);
 }

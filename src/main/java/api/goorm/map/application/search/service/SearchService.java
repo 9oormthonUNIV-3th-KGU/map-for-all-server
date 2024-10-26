@@ -57,6 +57,11 @@ public class SearchService {
         return searchRepository.deleteByUserId(userId);
     }
 
+    @Transactional
+    public Long deleteSearchByUserIdAndLocationId(Long userId, Long locationId) {
+        return searchRepository.deleteByUserIdAndLocationId(userId, locationId);
+    }
+
     public List<SearchResponseDto> getSearchList(User currentUser) {
         List<Search> searches = searchRepository.findTop5ByUserIdOrderByCreatedAtDesc(currentUser.getId());
         return searches.stream()
