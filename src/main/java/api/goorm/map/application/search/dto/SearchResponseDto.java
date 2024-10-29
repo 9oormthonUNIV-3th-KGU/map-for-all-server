@@ -6,13 +6,15 @@ import lombok.*;
 @Getter
 @Builder
 public class SearchResponseDto {
-    private String locationName;
+    private Long id;
+    private String name;
     private Double latitude;
     private Double longitude;
 
     public static SearchResponseDto toSearchResponseDto(Location location) {
         return SearchResponseDto.builder()
-                .locationName(location.getName())
+                .id(location.getId())
+                .name(location.getName())
                 .latitude(location.getLatitude())
                 .longitude(location.getLongitude())
                 .build();
