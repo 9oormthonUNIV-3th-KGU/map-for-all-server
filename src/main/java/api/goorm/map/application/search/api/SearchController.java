@@ -3,6 +3,7 @@ package api.goorm.map.application.search.api;
 import api.goorm.map.application.search.dto.SearchRequestDto;
 import api.goorm.map.application.search.dto.SearchResponseDto;
 import api.goorm.map.application.search.service.SearchService;
+import api.goorm.map.application.user.entity.User;
 import api.goorm.map.application.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +25,12 @@ public class SearchController {
     @Operation(summary = "검색 기록 저장", description = "사용자가 검색한 장소를 저장합니다.")
     @PostMapping("/location")
     public ResponseEntity<SearchResponseDto> updateSearch(@RequestBody SearchRequestDto dto) {
-        SearchResponseDto searchResponseDto = searchService.save(dto, userService.getCurrentUser());
+        User user = null;
+        try {
+            user = userService.getCurrentUser();
+        } catch (RuntimeException ignored){}
+
+        SearchResponseDto searchResponseDto = searchService.save(dto, user);
         return ResponseEntity.ok(searchResponseDto);
     }
 

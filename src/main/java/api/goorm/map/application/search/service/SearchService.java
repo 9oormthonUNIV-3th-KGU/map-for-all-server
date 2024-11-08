@@ -22,13 +22,12 @@ public class SearchService {
 
     @Transactional
     public SearchResponseDto save(SearchRequestDto dto, User user) {
-        String locationName = dto.getLocationName();
-        Location location = locationRepository.findByName(locationName)
+        Location location = locationRepository.findByNameAndLatitudeAndLongitude(dto.getLocationName(), dto.getLatitude(), dto.getLongitude())
                 .orElseGet(()-> {
                     // 새로운 장소 검색 시 location 생성
                     Location newLocation = Location.builder()
                             .views(1)
-                            .name(locationName)
+                            .name(dto.getLocationName())
                             .latitude(dto.getLatitude())
                             .longitude(dto.getLongitude())
                             .build();
@@ -37,7 +36,7 @@ public class SearchService {
                 });
 
         // 기존 장소일 경우 조회수 증가
-        if(location.getViews() > 1) {
+        if(location.getViews() >= 1) {
             location.incrementViews();
         }
 
